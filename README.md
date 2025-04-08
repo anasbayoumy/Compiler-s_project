@@ -1,63 +1,134 @@
-# Python Compiler: Lexical and Syntax Analysis
+# Python-like Compiler Project
 
-## Project Overview
+A compiler project that implements a Python-like language with lexical analysis, symbol table management, and error handling capabilities.
 
-This project aims to develop the lexical analysis and syntax analysis phases (i.e., the lexer and parser) of a compiler for the Python programming language. The project will identify and process basic Python language constructs and create a user-friendly graphical interface for interacting with the lexer and parser.
+## Project Structure
 
-## Project Team
+```
+project/
+├── src/
+│   ├── lexer/              # Lexical Analysis
+│   │   ├── lexer.hpp      # Lexer class definition
+│   │   ├── lexer.cpp      # Lexer implementation
+│   │   └── lexer_test.cpp # Lexer test cases
+│   │
+│   ├── symbol_table/      # Symbol Table Management
+│   │   ├── STable.hpp     # Symbol Table class definition
+│   │   ├── STable.cpp     # Symbol Table implementation
+│   │   └── symbol_table_test.cpp # Symbol Table test cases
+│   │
+│   ├── Error_Handeling/   # Error Handling System
+│   │   └── Error.hpp      # Error handling definitions
+│   │
+│   └── GUI/              # Graphical User Interface
+│       └── mainwindow.hpp # Main window class definition
+```
 
-- **Team Size:** 6 students
+## Features
 
-## Programming Language
+### 1. Lexical Analysis
+- Tokenizes Python-like source code
+- Handles keywords, identifiers, numbers, strings, and operators
+- Supports indentation-based block structure
+- Processes comments and whitespace
 
-- **Implementation Language:** C++
+### 2. Symbol Table Management
+- Hierarchical scope management (global, function, block)
+- Type inference for variables
+- Function and parameter tracking
+- Support for multiple data types:
+  - INTEGER
+  - FLOAT
+  - STRING
+  - BOOLEAN
+  - LIST
+  - DICT
+  - NONE
+  - UNKNOWN
 
-## Language Specifications
+### 3. Error Handling
+- Comprehensive error reporting system
+- Line and column number tracking
+- Multiple error types support
+- Detailed error messages
 
-The compiler will recognize and process the following constructs of the Python language:
+### 4. GUI Interface
+- Modern Qt-based interface
+- Source code input area
+- Token visualization
+- Symbol table display
+- Error message panel
 
-- **Keywords**
-- **Variable Identifiers**
-- **Function Identifiers**
-- **Data Types**
-- **Functions**
-- **Statements:**
-  - Assignment Statement
-  - Declaration Statement
-  - Return Statement
-  - Iterative Statement
-  - Conditional Statements
-  - Function Call Statement
-- **Expressions:**
-  - Arithmetic Expressions
-  - Boolean Expressions
+## Building the Project
 
-## Project Deliverables
+### Prerequisites
+- C++17 compatible compiler
+- CMake 3.10 or higher
+- Qt6 development libraries
+- Make or Ninja build system
 
-### 1. Lexical Analysis (Lexer)
-
-The lexer is responsible for reading the input source code file and categorizing its contents into tokens based on Python language specifications.
-
-- **Features:**
-  - **Tokenization:** Identify tokens for keywords, identifiers, operators, etc.
-  - **Symbol Table Creation:** Build a symbol table to store identifiers.
-  - **Graphical User Interface (GUI):** Provide a user interface for viewing the tokenized output.
-  - **Lexical Error Handling:** Detect and report lexical errors in the source code.
-
-### 2. Syntax Analysis (Parser)
-
-The parser will process the tokens produced by the lexer to create a parse tree, ensuring the input code adheres to Python’s grammar rules.
-
-- **Features:**
-  - **Grammar Rules Integration:** Define and implement the grammar rules for Python.
-  - **Parsing Implementation:** Develop the parsing mechanism to process the tokens.
-  - **Parse Tree Generation:** Construct a parse tree representing the syntactic structure of the code.
-  - **Graphical User Interface (GUI):** Provide a visual representation of the parse tree.
-  - **Parsing Error Handling:** Detect and report syntax errors during parsing.
-
-## Getting Started
-
-1. **Clone the Repository:**
+### Build Steps
+1. Create build directory:
    ```bash
-   git clone https://github.com/yourusername/your-repo-name.git
-   cd your-repo-name
+   mkdir build
+   cd build
+   ```
+
+2. Configure with CMake:
+   ```bash
+   cmake ..
+   ```
+
+3. Build the project:
+   ```bash
+   cmake --build .
+   ```
+
+## Testing
+
+The project includes test cases for both the lexer and symbol table components:
+
+### Lexer Tests
+```bash
+cd src/lexer
+g++ -o lexer_test lexer.cpp lexer_test.cpp
+./lexer_test
+```
+
+### Symbol Table Tests
+```bash
+cd src/symbol_table
+g++ -o symbol_table_test symbol_table_test.cpp STable.cpp ../lexer/lexer.cpp -I../
+./symbol_table_test
+```
+
+## Usage Example
+
+The compiler can process Python-like code such as:
+
+```python
+def calculate_area(width, height):
+    area = width * height
+    return area
+
+x = 42
+y = 3.14
+name = "Python"
+is_valid = True
+
+if x > y:
+    result = x + y
+    print(result)
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
