@@ -1,4 +1,4 @@
-#include "Lexer.hpp"
+#include "lexer.hpp"
 #include <iostream>
 #include <string>
 
@@ -46,10 +46,14 @@ def hello_world():
     
     for (const auto& token : tokens) {
         std::cout << tokenTypeToString(token.getType()) << "\t"
-                  << token.getLexeme() << "\t"
-                  << token.getLine() << "\t"
-                  << token.getColumn() << "\n";
+                << token.getLexeme() << "\t"
+                << token.getLine() << "\t"
+                << token.getColumn() << "\n";
     }
 
     return 0;
 } 
+
+
+
+
