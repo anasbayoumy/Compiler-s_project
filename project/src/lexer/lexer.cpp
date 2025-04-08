@@ -187,7 +187,7 @@ std::vector<Token> Lexer::tokenize() {
         if (currentPos >= sourceCode.length()) break;
 
         char c = currentChar();
-        Token token;
+        Token token("", TokenType::ERROR, currentLine, currentColumn);  // Initialize with default values
 
         if (c == '"' || c == '\'') {
             token = extractString();
