@@ -1,0 +1,17 @@
+[1] <keyword; def> <id; add> <symbol; (> <id; a> <symbol; ,> <id; b> <symbol; )> <symbol; :>
+[2] <indent;> <keyword; return> <id; a> <symbol; +> <id; b> <dedent;>
+[3] <keyword; def> <id; subtract> <symbol; (> <id; a> <symbol; ,> <id; b> <symbol; )> <symbol; :>
+[4] <indent;> <keyword; return> <id; a> <symbol; -> <id; b> <dedent;>
+[5] <keyword; def> <id; multiply> <symbol; (> <id; a> <symbol; ,> <id; b> <symbol; )> <symbol; :>
+[6] <indent;> <keyword; return> <id; a> <symbol; *> <id; b> <dedent;>
+[7] <keyword; def> <id; divide> <symbol; (> <id; a> <symbol; ,> <id; b> <symbol; )> <symbol; :>
+[8] <indent;> <keyword; if> <id; b> <symbol; ==> <int; 0> <symbol; :>
+[9] <indent;> <indent;> <keyword; return> <string; "Cannot divide by zero"> <dedent;>
+[10] <keyword; else> <symbol; :>
+[11] <indent;> <keyword; return> <id; a> <symbol; /> <id; b> <dedent;> <dedent;>
+[12] <id; result1> <symbol; => <id; add> <symbol; (> <int; 10> <symbol; ,> <int; 5> <symbol; )>
+[13] <id; result2> <symbol; => <id; subtract> <symbol; (> <int; 10> <symbol; ,> <int; 5> <symbol; )>
+[14] <id; result3> <symbol; => <id; multiply> <symbol; (> <int; 10> <symbol; ,> <int; 5> <symbol; )>
+[15] <id; result4> <symbol; => <id; divide> <symbol; (> <int; 10> <symbol; ,> <int; 5> <symbol; )>
+[16] <id; result5> <symbol; => <id; divide> <symbol; (> <int; 10> <symbol; ,> <int; 0> <symbol; )>
+[17] <id; print> <symbol; (> <id; result1> <symbol; ,> <id; result2> <symbol; ,> <id; result3> <symbol; ,> <id; result4> <symbol; ,> <id; result5> <symbol; )>
