@@ -11,15 +11,17 @@
 #include <algorithm>
 #include <iomanip>
 
+using namespace std;
+
 // Token structure to represent a single token
 struct Token {
-    std::string type;
-    std::string value;
+    string type;
+    string value;
     int line;
 
-    Token(const std::string& t, const std::string& v, int l) : type(t), value(v), line(l) {}
+    Token(const string& t, const string& v, int l) : type(t), value(v), line(l) {}
 
-    std::string toString() const {
+    string toString() const {
         return "<" + type + "; " + value + ">";
     }
 };
@@ -27,29 +29,29 @@ struct Token {
 // Node class for the parse tree
 class ParseTreeNode {
 public:
-    std::string type;
-    std::string value;
-    std::vector<std::shared_ptr<ParseTreeNode>> children;
+    string type;
+    string value;
+    vector<shared_ptr<ParseTreeNode>> children;
     int line;
 
-    ParseTreeNode(const std::string& t, const std::string& v = "", int l = -1)
+    ParseTreeNode(const string& t, const string& v = "", int l = -1)
         : type(t), value(v), line(l) {}
 
-    void addChild(std::shared_ptr<ParseTreeNode> child) {
+    void addChild(shared_ptr<ParseTreeNode> child) {
         children.push_back(child);
     }
 
     // Print the parse tree with indentation
     void print(int indent = 0) const {
-        std::string indentation(indent * 2, ' ');
-        std::cout << indentation << type;
+        string indentation(indent * 2, ' ');
+        cout << indentation << type;
         if (!value.empty()) {
-            std::cout << ": " << value;
+            cout << ": " << value;
         }
         if (line > 0) {
-            std::cout << " (line " << line << ")";
+            cout << " (line " << line << ")";
         }
-        std::cout << std::endl;
+        cout << endl;
 
         for (const auto& child : children) {
             child->print(indent + 1);
@@ -57,8 +59,8 @@ public:
     }
 
     // Save parse tree to a file
-    void saveToFile(std::ofstream& file, int indent = 0) const {
-        std::string indentation(indent * 2, ' ');
+    void saveToFile(ofstream& file, int indent = 0) const {
+        string indentation(indent * 2, ' ');
         file << indentation << type;
         if (!value.empty()) {
             file << ": " << value;
@@ -66,7 +68,7 @@ public:
         if (line > 0) {
             file << " (line " << line << ")";
         }
-        file << std::endl;
+        file << endl;
 
         for (const auto& child : children) {
             child->saveToFile(file, indent + 1);
@@ -77,10 +79,10 @@ public:
 // Parser class for syntax analysis
 class SyntaxAnalyzer {
 private:
-    std::vector<Token> tokens;
+    vector<Token> tokens;
     size_t currentTokenIndex;
-    std::shared_ptr<ParseTreeNode> parseTree;
-    std::vector<std::string> errors;
+    shared_ptr<ParseTreeNode> parseTree;
+    vector<string> errors;
     bool hasError;
 
     // Helper methods
@@ -98,12 +100,12 @@ private:
         return tokens[currentTokenIndex + 1];
     }
 
-    bool match(const std::string& tokenType) {
+    bool match(const string& tokenType) {
         if (isAtEnd()) return false;
         return currentToken().type == tokenType;
     }
 
-    bool matchValue(const std::string& tokenType, const std::string& value) {
+    bool matchValue(const string& tokenType, const string& value) {
         if (isAtEnd()) return false;
         return currentToken().type == tokenType && currentToken().value == value;
     }
@@ -114,9 +116,9 @@ private:
         }
     }
 
-    void addError(const std::string& message) {
+    void addError(const string& message) {
         hasError = true;
-        std::string errorMsg = "Line " + std::to_string(currentToken().line) + ": " + message;
+        string errorMsg = "Line " + to_string(currentToken().line) + ": " + message;
         errors.push_back(errorMsg);
     }
 
@@ -144,8 +146,8 @@ private:
     }
 
     // Parse tree building methods
-    std::shared_ptr<ParseTreeNode> parseProgram() {
-        auto programNode = std::make_shared<ParseTreeNode>("Program");
+    shared_ptr<ParseTreeNode> parseProgram() {
+        auto programNode = make_shared<ParseTreeNode>("Program");
 
         while (!isAtEnd()) {
             auto statement = parseStatement();
@@ -159,7 +161,7 @@ private:
         return programNode;
     }
 
-    std::shared_ptr<ParseTreeNode> parseStatement() {
+    shared_ptr<ParseTreeNode> parseStatement() {
         if (matchValue("keyword", "if")) {
             return parseIfStatement();
         } else if (matchValue("keyword", "while")) {
@@ -196,14 +198,14 @@ private:
         return nullptr;
     }
 
-    std::shared_ptr<ParseTreeNode> parseAssignment() {
+    shared_ptr<ParseTreeNode> parseAssignment() {
         if (!match("id")) {
             addError("Expected identifier in assignment");
             return nullptr;
         }
 
-        auto assignNode = std::make_shared<ParseTreeNode>("Assignment", "", currentToken().line);
-        auto varNode = std::make_shared<ParseTreeNode>("Variable", currentToken().value, currentToken().line);
+        auto assignNode = make_shared<ParseTreeNode>("Assignment", "", currentToken().line);
+        auto varNode = make_shared<ParseTreeNode>("Variable", currentToken().value, currentToken().line);
         assignNode->addChild(varNode);
 
         advance(); // Move past identifier
@@ -213,8 +215,8 @@ private:
             return nullptr;
         }
 
-        std::string opValue = currentToken().value;
-        auto opNode = std::make_shared<ParseTreeNode>("Operator", opValue, currentToken().line);
+        string opValue = currentToken().value;
+        auto opNode = make_shared<ParseTreeNode>("Operator", opValue, currentToken().line);
         assignNode->addChild(opNode);
 
         advance(); // Move past operator
@@ -229,11 +231,11 @@ private:
         return assignNode;
     }
 
-    std::shared_ptr<ParseTreeNode> parseExpression() {
+    shared_ptr<ParseTreeNode> parseExpression() {
         // For simplicity, we'll just handle basic expressions
         if (match("int") || match("float") || match("string") || match("id")) {
-            auto exprNode = std::make_shared<ParseTreeNode>("Expression", "", currentToken().line);
-            auto valueNode = std::make_shared<ParseTreeNode>(currentToken().type, currentToken().value, currentToken().line);
+            auto exprNode = make_shared<ParseTreeNode>("Expression", "", currentToken().line);
+            auto valueNode = make_shared<ParseTreeNode>(currentToken().type, currentToken().value, currentToken().line);
             exprNode->addChild(valueNode);
             advance();
 
@@ -242,12 +244,12 @@ private:
                                    currentToken().value == "-" ||
                                    currentToken().value == "*" ||
                                    currentToken().value == "/")) {
-                auto opNode = std::make_shared<ParseTreeNode>("Operator", currentToken().value, currentToken().line);
+                auto opNode = make_shared<ParseTreeNode>("Operator", currentToken().value, currentToken().line);
                 exprNode->addChild(opNode);
                 advance();
 
                 if (match("int") || match("float") || match("string") || match("id")) {
-                    auto rightNode = std::make_shared<ParseTreeNode>(currentToken().type, currentToken().value, currentToken().line);
+                    auto rightNode = make_shared<ParseTreeNode>(currentToken().type, currentToken().value, currentToken().line);
                     exprNode->addChild(rightNode);
                     advance();
                     return exprNode;
@@ -265,13 +267,13 @@ private:
         return nullptr;
     }
 
-    std::shared_ptr<ParseTreeNode> parseIfStatement() {
+    shared_ptr<ParseTreeNode> parseIfStatement() {
         if (!matchValue("keyword", "if")) {
             addError("Expected 'if' keyword");
             return nullptr;
         }
 
-        auto ifNode = std::make_shared<ParseTreeNode>("IfStatement", "", currentToken().line);
+        auto ifNode = make_shared<ParseTreeNode>("IfStatement", "", currentToken().line);
         advance(); // Move past 'if'
 
         auto conditionNode = parseCondition();
@@ -304,7 +306,7 @@ private:
                 return nullptr;
             }
 
-            auto elifNode = std::make_shared<ParseTreeNode>("ElifStatement", "", elifCondNode->line);
+            auto elifNode = make_shared<ParseTreeNode>("ElifStatement", "", elifCondNode->line);
             elifNode->addChild(elifCondNode);
 
             if (!matchValue("symbol", ":")) {
@@ -337,7 +339,7 @@ private:
                 return nullptr;
             }
 
-            auto elseNode = std::make_shared<ParseTreeNode>("ElseStatement", "", elseBlockNode->line);
+            auto elseNode = make_shared<ParseTreeNode>("ElseStatement", "", elseBlockNode->line);
             elseNode->addChild(elseBlockNode);
             ifNode->addChild(elseNode);
         }
@@ -345,8 +347,8 @@ private:
         return ifNode;
     }
 
-    std::shared_ptr<ParseTreeNode> parseCondition() {
-        auto condNode = std::make_shared<ParseTreeNode>("Condition", "", currentToken().line);
+    shared_ptr<ParseTreeNode> parseCondition() {
+        auto condNode = make_shared<ParseTreeNode>("Condition", "", currentToken().line);
 
         auto leftExpr = parseExpression();
         if (!leftExpr) {
@@ -361,7 +363,7 @@ private:
                                currentToken().value == ">" ||
                                currentToken().value == "<=" ||
                                currentToken().value == ">=")) {
-            auto opNode = std::make_shared<ParseTreeNode>("ComparisonOperator", currentToken().value, currentToken().line);
+            auto opNode = make_shared<ParseTreeNode>("ComparisonOperator", currentToken().value, currentToken().line);
             condNode->addChild(opNode);
             advance();
 
@@ -376,8 +378,8 @@ private:
         return condNode;
     }
 
-    std::shared_ptr<ParseTreeNode> parseBlock() {
-        auto blockNode = std::make_shared<ParseTreeNode>("Block", "", currentToken().line);
+    shared_ptr<ParseTreeNode> parseBlock() {
+        auto blockNode = make_shared<ParseTreeNode>("Block", "", currentToken().line);
 
         if (match("indent")) {
             advance(); // Move past indent
@@ -407,13 +409,13 @@ private:
         return blockNode;
     }
 
-    std::shared_ptr<ParseTreeNode> parseWhileLoop() {
+    shared_ptr<ParseTreeNode> parseWhileLoop() {
         if (!matchValue("keyword", "while")) {
             addError("Expected 'while' keyword");
             return nullptr;
         }
 
-        auto whileNode = std::make_shared<ParseTreeNode>("WhileLoop", "", currentToken().line);
+        auto whileNode = make_shared<ParseTreeNode>("WhileLoop", "", currentToken().line);
         advance(); // Move past 'while'
 
         auto conditionNode = parseCondition();
@@ -439,13 +441,13 @@ private:
         return whileNode;
     }
 
-    std::shared_ptr<ParseTreeNode> parseForLoop() {
+    shared_ptr<ParseTreeNode> parseForLoop() {
         if (!matchValue("keyword", "for")) {
             addError("Expected 'for' keyword");
             return nullptr;
         }
 
-        auto forNode = std::make_shared<ParseTreeNode>("ForLoop", "", currentToken().line);
+        auto forNode = make_shared<ParseTreeNode>("ForLoop", "", currentToken().line);
         advance(); // Move past 'for'
 
         if (!match("id")) {
@@ -453,7 +455,7 @@ private:
             return nullptr;
         }
 
-        auto varNode = std::make_shared<ParseTreeNode>("Variable", currentToken().value, currentToken().line);
+        auto varNode = make_shared<ParseTreeNode>("Variable", currentToken().value, currentToken().line);
         forNode->addChild(varNode);
         advance(); // Move past identifier
 
@@ -486,13 +488,13 @@ private:
         return forNode;
     }
 
-    std::shared_ptr<ParseTreeNode> parseFunctionDefinition() {
+    shared_ptr<ParseTreeNode> parseFunctionDefinition() {
         if (!matchValue("keyword", "def")) {
             addError("Expected 'def' keyword");
             return nullptr;
         }
 
-        auto funcDefNode = std::make_shared<ParseTreeNode>("FunctionDefinition", "", currentToken().line);
+        auto funcDefNode = make_shared<ParseTreeNode>("FunctionDefinition", "", currentToken().line);
         advance(); // Move past 'def'
 
         if (!match("id")) {
@@ -500,7 +502,7 @@ private:
             return nullptr;
         }
 
-        auto nameNode = std::make_shared<ParseTreeNode>("FunctionName", currentToken().value, currentToken().line);
+        auto nameNode = make_shared<ParseTreeNode>("FunctionName", currentToken().value, currentToken().line);
         funcDefNode->addChild(nameNode);
         advance(); // Move past function name
 
@@ -511,14 +513,14 @@ private:
         advance(); // Move past '('
 
         // Parse parameters
-        auto paramsNode = std::make_shared<ParseTreeNode>("Parameters");
+        auto paramsNode = make_shared<ParseTreeNode>("Parameters");
         while (!matchValue("symbol", ")") && !isAtEnd()) {
             if (!match("id")) {
                 addError("Expected parameter name");
                 return nullptr;
             }
 
-            auto paramNode = std::make_shared<ParseTreeNode>("Parameter", currentToken().value, currentToken().line);
+            auto paramNode = make_shared<ParseTreeNode>("Parameter", currentToken().value, currentToken().line);
             paramsNode->addChild(paramNode);
             advance(); // Move past parameter name
 
@@ -554,13 +556,13 @@ private:
         return funcDefNode;
     }
 
-    std::shared_ptr<ParseTreeNode> parseFunctionCall() {
+    shared_ptr<ParseTreeNode> parseFunctionCall() {
         if (!match("id") && !match("Function")) {
             addError("Expected function name");
             return nullptr;
         }
 
-        auto funcCallNode = std::make_shared<ParseTreeNode>("FunctionCall", currentToken().value, currentToken().line);
+        auto funcCallNode = make_shared<ParseTreeNode>("FunctionCall", currentToken().value, currentToken().line);
         advance(); // Move past function name
 
         if (!matchValue("symbol", "(")) {
@@ -570,7 +572,7 @@ private:
         advance(); // Move past '('
 
         // Parse arguments
-        auto argsNode = std::make_shared<ParseTreeNode>("Arguments");
+        auto argsNode = make_shared<ParseTreeNode>("Arguments");
         while (!matchValue("symbol", ")") && !isAtEnd()) {
             auto argExpr = parseExpression();
             if (!argExpr) {
@@ -599,13 +601,13 @@ private:
         return funcCallNode;
     }
 
-    std::shared_ptr<ParseTreeNode> parseClassDefinition() {
+    shared_ptr<ParseTreeNode> parseClassDefinition() {
         if (!matchValue("keyword", "class")) {
             addError("Expected 'class' keyword");
             return nullptr;
         }
 
-        auto classDefNode = std::make_shared<ParseTreeNode>("ClassDefinition", "", currentToken().line);
+        auto classDefNode = make_shared<ParseTreeNode>("ClassDefinition", "", currentToken().line);
         advance(); // Move past 'class'
 
         if (!match("id")) {
@@ -613,7 +615,7 @@ private:
             return nullptr;
         }
 
-        auto nameNode = std::make_shared<ParseTreeNode>("ClassName", currentToken().value, currentToken().line);
+        auto nameNode = make_shared<ParseTreeNode>("ClassName", currentToken().value, currentToken().line);
         classDefNode->addChild(nameNode);
         advance(); // Move past class name
 
@@ -621,7 +623,7 @@ private:
         if (matchValue("symbol", "(")) {
             advance(); // Move past '('
 
-            auto baseClassesNode = std::make_shared<ParseTreeNode>("BaseClasses");
+            auto baseClassesNode = make_shared<ParseTreeNode>("BaseClasses");
 
             while (!matchValue("symbol", ")") && !isAtEnd()) {
                 if (!match("id")) {
@@ -629,7 +631,7 @@ private:
                     return nullptr;
                 }
 
-                auto baseClassNode = std::make_shared<ParseTreeNode>("BaseClass", currentToken().value, currentToken().line);
+                auto baseClassNode = make_shared<ParseTreeNode>("BaseClass", currentToken().value, currentToken().line);
                 baseClassesNode->addChild(baseClassNode);
                 advance(); // Move past base class name
 
@@ -666,13 +668,13 @@ private:
         return classDefNode;
     }
 
-    std::shared_ptr<ParseTreeNode> parseImportStatement() {
+    shared_ptr<ParseTreeNode> parseImportStatement() {
         if (!matchValue("keyword", "import")) {
             addError("Expected 'import' keyword");
             return nullptr;
         }
 
-        auto importNode = std::make_shared<ParseTreeNode>("ImportStatement", "", currentToken().line);
+        auto importNode = make_shared<ParseTreeNode>("ImportStatement", "", currentToken().line);
         advance(); // Move past 'import'
 
         if (!match("id")) {
@@ -680,7 +682,7 @@ private:
             return nullptr;
         }
 
-        auto moduleNode = std::make_shared<ParseTreeNode>("ModuleName", currentToken().value, currentToken().line);
+        auto moduleNode = make_shared<ParseTreeNode>("ModuleName", currentToken().value, currentToken().line);
         importNode->addChild(moduleNode);
         advance(); // Move past module name
 
@@ -693,7 +695,7 @@ private:
                 return nullptr;
             }
 
-            auto aliasNode = std::make_shared<ParseTreeNode>("Alias", currentToken().value, currentToken().line);
+            auto aliasNode = make_shared<ParseTreeNode>("Alias", currentToken().value, currentToken().line);
             importNode->addChild(aliasNode);
             advance(); // Move past alias
         }
@@ -701,13 +703,13 @@ private:
         return importNode;
     }
 
-    std::shared_ptr<ParseTreeNode> parseReturnStatement() {
+    shared_ptr<ParseTreeNode> parseReturnStatement() {
         if (!matchValue("keyword", "return")) {
             addError("Expected 'return' keyword");
             return nullptr;
         }
 
-        auto returnNode = std::make_shared<ParseTreeNode>("ReturnStatement", "", currentToken().line);
+        auto returnNode = make_shared<ParseTreeNode>("ReturnStatement", "", currentToken().line);
         advance(); // Move past 'return'
 
         // Return value is optional
@@ -725,23 +727,23 @@ public:
     SyntaxAnalyzer() : currentTokenIndex(0), hasError(false) {}
 
     // Extract tokens from the lexer output format
-    std::vector<Token> extractTokens(const std::vector<std::string>& tokenLines) {
-        std::vector<Token> result;
-        std::regex linePattern(R"(\[(\d+)\]\s*(.*))");
-        std::regex tokenPattern(R"(<([^;]+);\s*([^>]*)>)");
+    vector<Token> extractTokens(const vector<string>& tokenLines) {
+        vector<Token> result;
+        regex linePattern(R"(\[(\d+)\]\s*(.*))");
+        regex tokenPattern(R"(<([^;]+);\s*([^>]*)>)");
 
         for (const auto& line : tokenLines) {
-            std::smatch lineMatch;
-            if (std::regex_match(line, lineMatch, linePattern)) {
-                int lineNumber = std::stoi(lineMatch[1]);
-                std::string tokensStr = lineMatch[2];
+            smatch lineMatch;
+            if (regex_match(line, lineMatch, linePattern)) {
+                int lineNumber = stoi(lineMatch[1]);
+                string tokensStr = lineMatch[2];
 
-                std::smatch tokenMatch;
-                std::string::const_iterator searchStart(tokensStr.cbegin());
+                smatch tokenMatch;
+                string::const_iterator searchStart(tokensStr.cbegin());
 
-                while (std::regex_search(searchStart, tokensStr.cend(), tokenMatch, tokenPattern)) {
-                    std::string tokenType = tokenMatch[1];
-                    std::string tokenValue = tokenMatch[2];
+                while (regex_search(searchStart, tokensStr.cend(), tokenMatch, tokenPattern)) {
+                    string tokenType = tokenMatch[1];
+                    string tokenValue = tokenMatch[2];
 
                     // Trim whitespace
                     tokenType.erase(0, tokenType.find_first_not_of(" \t\n\r\f\v"));
@@ -759,7 +761,7 @@ public:
     }
 
     // Parse tokens into a syntax tree
-    bool parse(const std::vector<std::string>& tokenLines) {
+    bool parse(const vector<string>& tokenLines) {
         tokens = extractTokens(tokenLines);
         currentTokenIndex = 0;
         hasError = false;
@@ -775,12 +777,12 @@ public:
     }
 
     // Get the parse tree
-    std::shared_ptr<ParseTreeNode> getParseTree() const {
+    shared_ptr<ParseTreeNode> getParseTree() const {
         return parseTree;
     }
 
     // Get parsing errors
-    std::vector<std::string> getErrors() const {
+    vector<string> getErrors() const {
         return errors;
     }
 
@@ -794,55 +796,55 @@ public:
         if (parseTree) {
             parseTree->print();
         } else {
-            std::cout << "No parse tree available." << std::endl;
+            cout << "No parse tree available." << endl;
         }
     }
 
     // Save parse tree to a file
-    void saveParseTree(const std::string& filename) const {
+    void saveParseTree(const string& filename) const {
         if (!parseTree) {
-            std::cerr << "No parse tree available to save." << std::endl;
+            cerr << "No parse tree available to save." << endl;
             return;
         }
 
-        std::ofstream file(filename);
+        ofstream file(filename);
         if (!file.is_open()) {
-            std::cerr << "Error: Could not open file " << filename << " for writing" << std::endl;
+            cerr << "Error: Could not open file " << filename << " for writing" << endl;
             return;
         }
 
         parseTree->saveToFile(file);
         file.close();
 
-        std::cout << "Parse tree saved to " << filename << std::endl;
+        cout << "Parse tree saved to " << filename << endl;
     }
 
     // Print errors
     void printErrors() const {
         if (errors.empty()) {
-            std::cout << "No syntax errors found." << std::endl;
+            cout << "No syntax errors found." << endl;
             return;
         }
 
-        std::cout << "Syntax Errors:" << std::endl;
+        cout << "Syntax Errors:" << endl;
         for (const auto& error : errors) {
-            std::cout << "  " << error << std::endl;
+            cout << "  " << error << endl;
         }
     }
 };
 
 // Function to read token lines from a file
-std::vector<std::string> readTokensFromFile(const std::string& filename) {
-    std::vector<std::string> tokenLines;
-    std::ifstream file(filename);
+vector<string> readTokensFromFile(const string& filename) {
+    vector<string> tokenLines;
+    ifstream file(filename);
 
     if (!file.is_open()) {
-        std::cerr << "Error: Could not open file " << filename << std::endl;
+        cerr << "Error: Could not open file " << filename << endl;
         return tokenLines;
     }
 
-    std::string line;
-    while (std::getline(file, line)) {
+    string line;
+    while (getline(file, line)) {
         if (!line.empty()) {
             tokenLines.push_back(line);
         }
@@ -853,16 +855,16 @@ std::vector<std::string> readTokensFromFile(const std::string& filename) {
 }
 
 // Function to save token lines to a file
-void saveTokensToFile(const std::vector<std::string>& tokenLines, const std::string& filename) {
-    std::ofstream file(filename);
+void saveTokensToFile(const vector<string>& tokenLines, const string& filename) {
+    ofstream file(filename);
 
     if (!file.is_open()) {
-        std::cerr << "Error: Could not open file " << filename << " for writing" << std::endl;
+        cerr << "Error: Could not open file " << filename << " for writing" << endl;
         return;
     }
 
     for (const auto& line : tokenLines) {
-        file << line << std::endl;
+        file << line << endl;
     }
 
     file.close();
@@ -871,8 +873,8 @@ void saveTokensToFile(const std::vector<std::string>& tokenLines, const std::str
 // Main function to demonstrate the parser
 int main(int argc, char* argv[]) {
     // Check if a filename was provided
-    std::string tokensFile = "tokens.txt";
-    std::string parseTreeFile = "parse_tree.txt";
+    string tokensFile = "tokens.txt";
+    string parseTreeFile = "parse_tree.txt";
 
     if (argc > 1) {
         tokensFile = argv[1];
@@ -883,22 +885,22 @@ int main(int argc, char* argv[]) {
     }
 
     // Read token lines from file
-    std::vector<std::string> tokenLines = readTokensFromFile(tokensFile);
+    vector<string> tokenLines = readTokensFromFile(tokensFile);
 
     if (tokenLines.empty()) {
-        std::cout << "No tokens found in file. Using example tokens for testing." << std::endl;
+        cout << "No tokens found in file. Using example tokens for testing." << endl;
 
         // Example token lines for testing
         tokenLines.push_back("[1] <keyword; def> <id; factorial> <symbol; (> <id; n> <symbol; )> <symbol; :>");
         tokenLines.push_back("[2] <indent;> <keyword; if> <id; n> <symbol; <=> <int; 1> <symbol; :>");
-        tokenLines.push_back("[3] <indent;> <keyword; return> <int; 1> <dedent;>");
+        tokenLines.push_back("[3] <indent;> <indent;> <keyword; return> <int; 1> <dedent;>");
         tokenLines.push_back("[4] <keyword; else> <symbol; :>");
-        tokenLines.push_back("[5] <indent;> <keyword; return> <id; n> <symbol; *> <id; factorial> <symbol; (> <id; n> <symbol; -> <int; 1> <symbol; )> <dedent;> <dedent;>");
+        tokenLines.push_back("[5] <indent;> <keyword; return> <id; n> <symbol; *> <id; factorial> <symbol; (> <id; n> <symbol; -> <int; 1> <symbol; )> <dedent;>");
     }
 
-    std::cout << "Token lines:" << std::endl;
+    cout << "Token lines:" << endl;
     for (const auto& line : tokenLines) {
-        std::cout << line << std::endl;
+        cout << line << endl;
     }
 
     // Create and run the parser
@@ -906,14 +908,14 @@ int main(int argc, char* argv[]) {
     bool success = parser.parse(tokenLines);
 
     if (success) {
-        std::cout << "\nParsing successful!" << std::endl;
-        std::cout << "Parse Tree:" << std::endl;
+        cout << "\nParsing successful!" << endl;
+        cout << "Parse Tree:" << endl;
         parser.printParseTree();
 
         // Save parse tree to file
         parser.saveParseTree(parseTreeFile);
     } else {
-        std::cout << "\nParsing failed with errors:" << std::endl;
+        cout << "\nParsing failed with errors:" << endl;
         parser.printErrors();
     }
 

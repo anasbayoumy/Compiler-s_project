@@ -1,0 +1,6 @@
+[1] <keyword; def> <id; factorial> <symbol; (> <id; n> <symbol; )> <symbol; :>
+[2] <indent;> <keyword; if> <id; n> <symbol; <=> <int; 1> <symbol; :>
+[3] <indent;> <keyword; return> <int; 1>
+[4] <dedent;> <keyword; else> <symbol; :>
+[5] <indent;> <keyword; return> <id; n>
+[6] <dedent;>
